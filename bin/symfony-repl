@@ -79,4 +79,6 @@ EOL;
 
     // And go!
     $shell->run();
+
+    return $shell->getScopeVariables();
 });
