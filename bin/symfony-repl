@@ -18,7 +18,7 @@ $kernel->loadClassCache();
 $kernel->boot();
 $kernel->getContainer()->get('cache_clearer')->clear($kernel->getCacheDir());
 
-call_user_func(function() {
+call_user_func(function() use ($kernel) {
     $usageException = null;
 
     $input = new ArgvInput();
