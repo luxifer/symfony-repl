@@ -1,0 +1,18 @@
+{
+    "name": "luxifer/symfony-repl",
+    "description": "symfony REPL on top of psysh",
+    "type": "library",
+    "keywords": ["console", "interactive", "shell", "repl", "symfony"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Florent Viel",
+            "email": "florent.viel69@gmail.com",
+            "homepage": "http://florentviel.com"
+        }
+    ],
+    "require": {
+        "psy/psysh": "~0.1.8"
+    },
+    "bin": ["bin/symfony-repl"]
+}
