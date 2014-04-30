@@ -75,6 +75,7 @@ EOL;
 
     // Pass additional arguments to Shell as 'includes'
     $shell->setIncludes($input->getArgument('include'));
+    $shell->setScopeVariables(array($kernel));
 
     // And go!
     $shell->run();
