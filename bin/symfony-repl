@@ -6,79 +6,11 @@ $root = getcwd();
 require_once $root.'/app/bootstrap.php.cache';
 require_once $root.'/app/AppKernel.php';
 
-use Psy\Configuration;
 use Psy\Shell;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
-use Symfony\Component\Console\Input\InputOption;
 
 $kernel = new AppKernel('dev', true);
 $kernel->loadClassCache();
 $kernel->boot();
 $kernel->getContainer()->get('cache_clearer')->clear($kernel->getCacheDir());
 
-call_user_func(function() use ($kernel) {
-    $usageException = null;
-
-    $input = new ArgvInput();
-    try {
-        $input->bind(new InputDefinition(array(
-            new InputOption('help',    'h', InputOption::VALUE_NONE),
-            new InputOption('config',  'c', InputOption::VALUE_REQUIRED),
-            new InputOption('version', 'v', InputOption::VALUE_NONE),
-
-            new InputArgument('include', InputArgument::IS_ARRAY),
-        )));
-    } catch (\RuntimeException $e) {
-        $usageException = $e;
-    }
-
-    $config = array();
-
-    // Handle --config
-    if ($configFile = $input->getOption('config')) {
-        $config['configFile'] = $configFile;
-    }
-
-    $shell = new Shell(new Configuration($config));
-
-    // Handle --help
-    if ($usageException !== null || $input->getOption('help')) {
-        if ($usageException !== null) {
-            echo $usageException->getMessage() . PHP_EOL . PHP_EOL;
-        }
-
-        $version = $shell->getVersion();
-        $name    = reset($_SERVER['argv']);
-        echo <<<EOL
-$version
-
-Usage:
-  $name [--version] [--help] [files...]
-
-Options:
-  --help     -h Display this help message.
-  --config   -c Use an alternate PsySH config file location.
-  --version  -v Display the PsySH version.
-
-EOL;
-        exit($usageException === null ? 0 : 1);
-    }
-
-
-    // Handle --version
-    if ($input->getOption('version')) {
-        echo $shell->getVersion() . PHP_EOL;
-        exit(0);
-    }
-
-    // Pass additional arguments to Shell as 'includes'
-    $shell->setIncludes($input->getArgument('include'));
-    $shell->setScopeVariables(array($kernel));
-
-    // And go!
-    $shell->run();
-
-    return $shell->getScopeVariables();
-});
+extract(Shell::debug(array('kernel' => $kernel)));
