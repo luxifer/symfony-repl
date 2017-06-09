@@ -33,4 +33,6 @@ $container = $kernel->getContainer();
 $doctrine = $container->get('doctrine');
 $container->get('cache_clearer')->clear($kernel->getCacheDir());
 
-extract(Psy\Shell::debug(compact('kernel', 'container', 'doctrine')));
+$sh = new \Psy\Shell();
+$sh->setScopeVariables(compact('kernel', 'container', 'doctrine'));
+$sh->run();
