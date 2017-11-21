@@ -3,9 +3,9 @@
 
 $root = getcwd();
 
-require_once $root . '/app/autoload.php';
-
 $autoloaders = [
+    $root . '/app/autoload.php',
+    $root . '/vendor/autoload.php',
     __DIR__ . '/../vendor/autoload.php',
     __DIR__ . '/../../../autoload.php',
 ];
