@@ -3,18 +3,13 @@
 
 $root = getcwd();
 
-$autoloaders = [
-    $root . '/app/autoload.php',
-    $root . '/vendor/autoload.php',
-    __DIR__ . '/../vendor/autoload.php',
-    __DIR__ . '/../../../autoload.php',
-];
-
-foreach ($autoloaders as $autoloader) {
-    if (file_exists($autoloader)) {
-        require_once $autoloader;
+$require_once = function (array $files) {
+    foreach ($files as $file) {
+        if (file_exists($file)) {
+            require_once $file;
+        }
     }
-}
+};
 
 $bootstrap = $root . '/var/bootstrap.php.cache';
 
@@ -22,8 +17,12 @@ if (!file_exists($bootstrap)) {
     $bootstrap = $root . '/app/bootstrap.php.cache';
 }
 
-require_once $bootstrap;
-require_once $root . '/app/AppKernel.php';
+$require_once([
+    $root . '/app/autoload.php',
+    $root . '/vendor/autoload.php',
+    $bootstrap,
+    $root . '/app/AppKernel.php'
+]);
 
 $kernel = new AppKernel('dev', true);
 $kernel->loadClassCache();
@@ -32,6 +31,11 @@ $kernel->boot();
 $container = $kernel->getContainer();
 $doctrine = $container->get('doctrine');
 $container->get('cache_clearer')->clear($kernel->getCacheDir());
+
+$require_once([
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+]);
 
 $sh = new \Psy\Shell();
 $sh->setScopeVariables(compact('kernel', 'container', 'doctrine'));
